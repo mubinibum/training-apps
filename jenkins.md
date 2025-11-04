@@ -297,14 +297,16 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+       stage('Deploy') {
             steps {
                 sh '''
-                docker compose build app
-                docker compose up -d app
+                docker compose pull app || true
+                docker compose build --pull app
+                docker compose up -d --force-recreate app
                 '''
             }
         }
+
         
         stage('Backup') {
             steps {
