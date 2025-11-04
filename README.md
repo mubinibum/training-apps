@@ -69,7 +69,7 @@ volumes:
 Dari root folder (`training-apps`):
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
 
 ---
