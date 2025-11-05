@@ -1,16 +1,18 @@
-// app.js
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+const path = require('path')
+require('dotenv').config();
 
-// ... middleware dan routes lainnya ...
+app.disable('x-powered-by')
+// Import Middleware
+const logger = require('./middleware/logger')
+app.use(logger)
 
-// Export app SEBELUM listen
-module.exports = app;
+// Dashboard
+app.use('/', express.static(path.join(__dirname, 'public')));
 
-// Hanya listen jika file dijalankan langsung (bukan saat testing)
-if (require.main === module) {
-  const PORT = process.env.APP_PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`);
-  });
-}
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Example app listening on port ${process.env.APP_PORT}`)
+})
+
+module.exports = app
