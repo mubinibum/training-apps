@@ -415,14 +415,7 @@ pipeline {
 
 ## Setup Instructions
 
-### Step 1: Clone Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/training-apps.git
-cd training-apps
-```
-
-### Step 2: Start All Services
+### Step 1: Start All Services
 
 **Windows (PowerShell):**
 ```powershell
@@ -436,7 +429,7 @@ docker compose up -d --build
 
 **First build will take 7-10 minutes** depending on internet speed.
 
-### Step 3: Verify All Containers Running
+### Step 2: Verify All Containers Running
 
 ```bash
 docker compose ps
@@ -452,7 +445,7 @@ simple-sonarqube    Up
 simple-db           Up (healthy)
 ```
 
-### Step 4: Access Services
+### Step 3: Access Services
 
 Open in your browser:
 
