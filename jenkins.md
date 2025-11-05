@@ -8,9 +8,7 @@
 2. [Project Structure](#project-structure)
 3. [Setup Instructions](#setup-instructions)
 4. [Jenkins Configuration](#jenkins-configuration)
-7. [Pipeline Setup](#pipeline-setup)
-8. [Troubleshooting](#troubleshooting)
-9. [Tips & Best Practices](#tips--best-practices)
+5. [Pipeline Setup](#pipeline-setup)
 
 ---
 
@@ -630,27 +628,6 @@ docker exec simple-agent docker ps
 1. Verify secret is correct in docker-compose.yml
 2. Restart agent: `docker compose restart agent`
 3. Check logs: `docker logs simple-agent`
-4. Verify WebSocket is enabled in Jenkins node config
-
-### Issue: Docker permission denied in pipeline
-
-**Solution:**
-Ensure `user: root` is set for agent in docker-compose.yml:
-```yaml
-agent:
-  user: root  # Required for Docker socket access
-```
-
-### Issue: SonarQube can't be reached
-
-**Check:**
-```bash
-# From agent container
-docker exec simple-agent ping -c 3 sonarqube
-docker exec simple-agent curl -I http://sonarqube:9000
-```
-
-**Fix:** Ensure Jenkinsfile uses `http://sonarqube:9000` NOT `http://localhost:9000`
 
 ### Issue: Port already in use
 
