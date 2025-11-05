@@ -508,7 +508,6 @@ docker exec simple-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
    - **Labels:** `devops1-agent`
    - **Usage:** Use this node as much as possible
    - **Launch method:** Launch agent by connecting it to the controller
-   - ✅ **Use WebSocket:** CHECK THIS BOX (important!)
 
 5. Click **Save**
 
