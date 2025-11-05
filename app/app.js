@@ -4,6 +4,7 @@ const path = require('path')
 require('dotenv').config();
 
 app.disable('x-powered-by')
+
 // Import Middleware
 const logger = require('./middleware/logger')
 app.use(logger)
@@ -11,8 +12,14 @@ app.use(logger)
 // Dashboard
 app.use('/', express.static(path.join(__dirname, 'public')));
 
-app.listen(process.env.APP_PORT, () => {
-  console.log(`Example app listening on port ${process.env.APP_PORT}`)
-})
 
-module.exports = app
+// Export app SEBELUM listen
+module.exports = app;
+
+// Only start server when run directly (not during testing)
+if (require.main === module) {
+  const PORT = process.env.APP_PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`);
+  });
+}
