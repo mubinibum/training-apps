@@ -1,7 +1,7 @@
 // BAD TEST CODE - Will trigger SonarQube findings!
 const request = require('supertest');
 require('dotenv').config();
-const app = require('../app');
+const app = require('./app');
 
 // Code Smell: Unused import
 const fs = require('fs');
