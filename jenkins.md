@@ -476,11 +476,17 @@ docker exec simple-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 1. Access http://localhost:8080
 2. Enter the initial admin password
 3. Click **Install suggested plugins**
-4. Wait for plugins to install (~2-3 minutes)
-5. Create your admin user
-6. Save and Continue
-7. Jenkins URL: http://localhost:8080 (default is fine)
-8. Click **Start using Jenkins**
+   Kamu harus sudah lihat plugin seperti:
+   - Docker Pipeline
+   - Pipeline
+   - Pipeline: Github
+   - Pipeline: Stage View Plugin
+   - SonarQube Scanner for Jenkins
+5. Wait for plugins to install (~2-3 minutes)
+6. Create your admin user
+7. Save and Continue
+8. Jenkins URL: http://localhost:8080 (default is fine)
+9. Click **Start using Jenkins**
 
 ### Step 2: Configure Jenkins Agent
 
