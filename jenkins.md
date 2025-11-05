@@ -158,15 +158,14 @@ services:
   agent:
     build: ./jenkins-agent
     container_name: simple-agent
-    user: root  # Required for Docker socket access
+    user: root
     depends_on:
       - jenkins
     environment:
       - JENKINS_URL=http://jenkins:8080
       - JENKINS_AGENT_NAME=devops1-agent
       - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
-      # UPDATE WITH YOUR SECRET FROM JENKINS UI
-      - JENKINS_SECRET=${JENKINS_SECRET:-}
+      - JENKINS_SECRET=
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent_workspace:/home/jenkins/agent
@@ -199,7 +198,7 @@ FROM jenkins/jenkins:lts-jdk17
 
 USER root
 
-# Install Docker CLI (auto-detects architecture)
+# Install Docker CLI (multi-platform compatible)
 RUN apt-get update && \
     apt-get install -y \
     git \
@@ -214,8 +213,8 @@ RUN apt-get update && \
     chmod a+r /etc/apt/keyrings/docker.gpg && \
     # Add Docker repository
     echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     # Install Docker CLI and Docker Compose plugin
     apt-get update && \
     apt-get install -y docker-ce-cli docker-compose-plugin && \
@@ -233,6 +232,7 @@ RUN jenkins-plugin-cli --plugins \
 
 USER jenkins
 
+# Skip initial setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 ```
 
@@ -247,7 +247,7 @@ FROM jenkins/inbound-agent:latest-jdk17
 
 USER root
 
-# Install Node.js, Docker CLI, and SonarScanner (multi-platform)
+# Install basic tools
 RUN apt-get update && \
     apt-get install -y \
     curl \
@@ -256,42 +256,52 @@ RUN apt-get update && \
     git-lfs \
     ca-certificates \
     unzip \
-    lsb-release && \
-    # Install Node.js 18.x
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    lsb-release \
+    wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 18.x
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get update && \
     apt-get install -y nodejs && \
-    # Add Docker's official GPG key
-    install -m 0755 -d /etc/apt/keyrings && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Docker CLI and Docker Compose
+RUN install -m 0755 -d /etc/apt/keyrings && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
     chmod a+r /etc/apt/keyrings/docker.gpg && \
-    # Add Docker repository
     echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    # Install Docker CLI and Docker Compose plugin
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update && \
     apt-get install -y docker-ce-cli docker-compose-plugin && \
-    # Install SonarScanner CLI
-    mkdir -p /opt/sonar-scanner && \
-    curl -sLo /tmp/sonar.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip && \
-    unzip /tmp/sonar.zip -d /opt/sonar-scanner && \
-    ln -sf /opt/sonar-scanner/sonar-scanner-*/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
-    chmod +x /usr/local/bin/sonar-scanner && \
-    rm /tmp/sonar.zip && \
-    # Cleanup
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    # Verify installations
-    node -v && npm -v && git --version && docker --version && sonar-scanner --version
+    rm -rf /var/lib/apt/lists/*
 
-# Add SonarScanner to PATH
-ENV PATH="/usr/local/bin:/opt/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin:${PATH}"
+# Install SonarScanner (platform-independent, runs on JVM)
+RUN mkdir -p /opt/sonar-scanner && \
+    curl -fsSL -o /tmp/sonar.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006.zip && \
+    unzip -q /tmp/sonar.zip -d /opt/sonar-scanner && \
+    SCANNER_DIR=$(ls -d /opt/sonar-scanner/sonar-scanner-* | head -n 1) && \
+    ln -sf $SCANNER_DIR/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
+    chmod +x /usr/local/bin/sonar-scanner && \
+    chmod +x $SCANNER_DIR/bin/sonar-scanner && \
+    rm /tmp/sonar.zip
 
-# Set Docker host
+# Verify
+RUN echo "=== Verifying ===" && \
+    node -v && npm -v && \
+    git --version && \
+    docker --version && \
+    docker compose version && \
+    sonar-scanner --version
+
+ENV PATH="/usr/local/bin:${PATH}"
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
 USER jenkins
-
 WORKDIR /home/jenkins/agent
 ```
 
@@ -309,10 +319,10 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (including dev for tests)
 RUN npm install
 
-# Copy application code
+# Copy all application files
 COPY . .
 
 # Expose port
@@ -336,7 +346,7 @@ pipeline {
         stage('Pull SCM') {
             steps {
                 echo 'Cloning repository...'
-                git branch: 'main', url: 'https://github.com/YOUR_USERNAME/training-apps.git'
+                git branch: 'main', url: 'https://github.com/USERNAME/training-apps.git'
             }
         }
         
@@ -344,7 +354,7 @@ pipeline {
             steps {
                 echo 'Installing dependencies...'
                 dir('app') {
-                    sh 'npm ci'
+                    sh 'npm install'
                 }
             }
         }
@@ -353,8 +363,10 @@ pipeline {
             steps {
                 echo 'Running tests...'
                 dir('app') {
-                    sh 'npm test'
-                    sh 'npm run test:coverage'
+                    sh '''
+                        npm test
+                        npm run test:coverage
+                    '''
                 }
             }
             post {
@@ -373,7 +385,7 @@ pipeline {
                             -Dsonar.projectKey=simple-apps \
                             -Dsonar.sources=. \
                             -Dsonar.host.url=http://sonarqube:9000 \
-                            -Dsonar.login=YOUR_SONARQUBE_TOKEN
+                            -Dsonar.login=
                     '''
                 }
             }
@@ -391,21 +403,21 @@ pipeline {
 
         stage('Backup') {
             steps {
-                echo 'Backup stage...'
-                sh 'echo "Backup completed or skipped"'
+                echo 'Pushing image to registry...'
+                sh 'docker compose push app || echo "Push failed or not configured"'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed!'
+            echo 'Pipeline failed!'
         }
         always {
-            echo '🏁 Pipeline finished!'
+            echo 'Cleaning up workspace...'
         }
     }
 }
@@ -524,28 +536,6 @@ docker logs simple-agent
 ```
 
 In Jenkins UI, agent should show as "Connected" with green icon.
-
-### Step 4: Configure SonarQube
-
-1. Access http://localhost:9000
-2. Login with: `admin` / `admin`
-3. Change password when prompted
-4. Go to **My Account** → **Security** → **Generate Token**
-   - Name: `jenkins`
-   - Type: Global Analysis Token
-   - Click **Generate**
-   - **Copy the token** (e.g., `sqp_abc123...`)
-
-5. Add token to Jenkins:
-   - Go to Jenkins: **Manage Jenkins** → **Credentials**
-   - Click **System** → **Global credentials (unrestricted)**
-   - Click **Add Credentials**
-   - Kind: **Secret text**
-   - Secret: paste your SonarQube token
-   - ID: `sonarqube-token`
-   - Description: `SonarQube Auth Token`
-   - Click **Create**
-
 ---
 
 ## Pipeline Setup
@@ -576,10 +566,6 @@ Update your Jenkinsfile on GitHub with correct values:
 
 **Better approach - use credentials:**
 ```groovy
-environment {
-    SONAR_LOGIN = credentials('sonarqube-token')
-}
-
 stage('Code Review') {
     steps {
         dir('app') {
@@ -588,7 +574,7 @@ stage('Code Review') {
                     -Dsonar.projectKey=simple-apps \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://sonarqube:9000 \
-                    -Dsonar.login=${SONAR_LOGIN}
+                    -Dsonar.login=${SONAR_TOKEN}
             '''
         }
     }
