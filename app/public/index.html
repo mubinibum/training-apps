@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page Modern</title>
+    <title>Web DevOps Training</title>
     <style>
         * {
             margin: 0;
@@ -14,107 +14,120 @@
         }
 
         body {
-            background: linear-gradient(135deg, #eef2f3, #8e9eab);
+            background: #f5f7fa;
             color: #333;
-            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
         }
 
         header {
+            width: 100%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 10%;
             position: fixed;
-            width: 100%;
             top: 0;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             z-index: 1000;
         }
 
         header h1 {
-            font-size: 1.5rem;
-            color: #222;
-            font-weight: 600;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0d1b2a;
         }
 
         nav ul {
-            display: flex;
             list-style: none;
+            display: flex;
             gap: 2rem;
         }
 
         nav a {
-            text-decoration: none;
-            color: #444;
             font-weight: 500;
+            color: #0d1b2a;
             transition: color 0.3s ease;
         }
 
         nav a:hover {
-            color: #0077ff;
+            color: #1b263b;
         }
 
         .hero {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             text-align: center;
             padding: 0 2rem;
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-            color: #222;
+            background: url('https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260') no-repeat center center/cover;
+            color: #fff;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 27, 42, 0.6);
+            mix-blend-mode: multiply;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
         }
 
         .hero h2 {
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            animation: fadeDown 1s ease;
         }
 
         .hero p {
             font-size: 1.2rem;
-            max-width: 600px;
-            line-height: 1.6;
             margin-bottom: 2rem;
-            animation: fadeUp 1s ease;
         }
 
-        .hero button {
-            padding: 0.9rem 2rem;
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
             font-size: 1rem;
+            font-weight: 600;
             border: none;
             border-radius: 50px;
-            background: #0077ff;
-            color: white;
+            background: #1b263b;
+            color: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .hero button:hover {
-            background: #005ed6;
+        .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 87, 214, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         section.features {
-            padding: 6rem 10%;
-            background: #fff;
+            padding: 6rem 5%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         }
 
         .feature {
-            background: #f9f9f9;
+            background: #fff;
             border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem 1.8rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
         }
 
         .feature:hover {
@@ -122,52 +135,41 @@
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
         }
 
+        .feature img {
+            width: 60px;
+            margin-bottom: 1.2rem;
+        }
+
         .feature h3 {
-            margin-bottom: 1rem;
-            color: #0077ff;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: #0d1b2a;
         }
 
         .feature p {
-            font-size: 0.95rem;
             color: #555;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
         footer {
-            background: #222;
+            background: #0d1b2a;
             color: #ccc;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 1rem;
+        }
+
+        footer p {
             font-size: 0.9rem;
-        }
-
-        @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         @media (max-width: 768px) {
             .hero h2 {
-                font-size: 2.2rem;
+                font-size: 2.4rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
             }
 
             nav ul {
@@ -179,40 +181,47 @@
 
 <body>
     <header>
-        <h1>BrandName</h1>
+        <h1>DevOps Mastery</h1>
         <nav>
             <ul>
-                <li><a href="#home">Beranda</a></li>
-                <li><a href="#features">Fitur</a></li>
-                <li><a href="#contact">Kontak</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
 
     <section class="hero" id="home">
-        <h2>Selamat Datang di BrandName</h2>
-        <p>Tempat di mana desain modern bertemu dengan kenyamanan digital. Kami hadir untuk membuat pengalamanmu lebih
-            elegan, cepat, dan inspiratif.</p>
-        <button>Mulai Sekarang</button>
+        <div class="hero-content">
+            <h2>Level Up Your DevOps Skills</h2>
+            <p>Join our intensive web DevOps training and master CI/CD, infrastructure-as-code, containers, monitoring &
+                beyond — become the bridge between code and cloud.</p>
+            <a class="btn" href="#features">Get Started</a>
+        </div>
     </section>
 
     <section class="features" id="features">
         <div class="feature">
-            <h3>✨ Desain Elegan</h3>
-            <p>Tampilan bersih dan minimalis untuk memberikan kesan profesional dan modern.</p>
+            <img src="https://img.icons8.com/clouds/100/000000/continuous-integration.png" alt="CI/CD icon">
+            <h3>CI/CD Pipelines</h3>
+            <p>Build, test, and deploy automatically using Jenkins, GitLab CI, and GitHub Actions in real-world
+                workflows.</p>
         </div>
         <div class="feature">
-            <h3>⚡ Performa Cepat</h3>
-            <p>Optimasi ringan untuk waktu muat kilat dan pengalaman yang mulus.</p>
+            <img src="https://img.icons8.com/clouds/100/000000/docker.png" alt="Containers icon">
+            <h3>Containers & Orchestration</h3>
+            <p>Master Docker, Kubernetes and docker-compose to scale applications reliably in production.</p>
         </div>
         <div class="feature">
-            <h3>💡 Responsif</h3>
-            <p>Desain fleksibel yang tetap indah di semua ukuran layar, dari ponsel hingga desktop.</p>
+            <img src="https://img.icons8.com/clouds/100/000000/cloud-configuration.png" alt="Cloud icon">
+            <h3>Infrastructure as Code</h3>
+            <p>Automate your infrastructure with Terraform, Ansible, and learn best practices for cloud governance.</p>
         </div>
     </section>
 
     <footer id="contact">
-        <p>© 2025 BrandName. Semua hak dilindungi.</p>
+        <p>© 2025 DevOps Mastery. All rights reserved.</p>
+        <p>Contact: info@devopsmastery.com</p>
     </footer>
 </body>
 
