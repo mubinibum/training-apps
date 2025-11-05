@@ -667,103 +667,6 @@ netstat -ano | findstr :8080
 
 ---
 
-## Tips & Best Practices
-
-### 1. Multi-Platform Compatibility
-
-✅ **DO:**
-- Use `$(dpkg --print-architecture)` for auto-detection
-- Install from official Docker repos (auto-detects arch)
-- Use official Docker Compose plugin (not standalone binary)
-- Test on target platforms before production
-
-❌ **DON'T:**
-- Hardcode architecture (e.g., `aarch64`, `x86_64`)
-- Download arch-specific binaries manually
-- Use platform-specific commands
-
-### 2. Security
-
-✅ **For Development/Learning:**
-- Running containers as root is acceptable
-- Direct token in Jenkinsfile is OK for testing
-
-✅ **For Production:**
-- Use least-privilege users
-- Store secrets in Jenkins credentials
-- Enable TLS/SSL
-- Use Docker secrets or vault solutions
-- Regular security updates
-
-### 3. Performance
-
-- **Increase Docker Desktop resources:** 8GB RAM minimum, 16GB recommended
-- **Use caching:** npm ci is faster than npm install with lockfile
-- **Layer optimization:** Order Dockerfile commands by change frequency
-- **Volume cleanup:** Regularly run `docker system prune`
-
-### 4. Monitoring
-
-```bash
-# View resource usage
-docker stats
-
-# View logs
-docker compose logs -f
-
-# Check disk space
-docker system df
-```
-
-### 5. Backup
-
-**Backup Jenkins data:**
-```bash
-docker run --rm \
-  -v jenkins_home:/data \
-  -v $(pwd):/backup \
-  alpine tar czf /backup/jenkins_backup.tar.gz -C /data .
-```
-
-**Restore:**
-```bash
-docker run --rm \
-  -v jenkins_home:/data \
-  -v $(pwd):/backup \
-  alpine sh -c "cd /data && tar xzf /backup/jenkins_backup.tar.gz"
-```
-
----
-
-## Platform-Specific Notes
-
-### Windows
-
-- Docker Desktop must be running
-- Use PowerShell (not CMD) for commands
-- Line endings: Set git config `core.autocrlf=false`
-- Paths: Use forward slashes in docker-compose.yml
-
-### macOS
-
-- Docker Desktop handles everything automatically
-- Apple Silicon: Docker uses Rosetta for x86 images
-- Socket permissions: No manual changes needed
-
-### Linux
-
-- May need to add user to docker group:
-  ```bash
-  sudo usermod -aG docker $USER
-  newgrp docker
-  ```
-- Socket permissions:
-  ```bash
-  sudo chmod 666 /var/run/docker.sock
-  ```
-
----
-
 ## Common Commands Reference
 
 ```bash
@@ -808,25 +711,6 @@ docker system prune -a
 | PostgreSQL | SonarQube database | 5432 |
 | Application | Your Node.js app | 5050 |
 
-**Key Features:**
-- ✅ Multi-platform support (Windows/macOS/Linux)
-- ✅ Auto-architecture detection
-- ✅ Complete CI/CD pipeline
-- ✅ Code quality analysis
-- ✅ Containerized deployment
-- ✅ Docker-in-Docker support
-
----
-
-## Next Steps
-
-1. ✅ Setup complete - all services running
-2. 🔧 Customize Jenkinsfile for your needs
-3. 📊 Add more tests and coverage
-4. 🔒 Implement security best practices
-5. 📈 Add monitoring and alerting
-6. 🚀 Deploy to production environment
-
 ---
 
 **🎉 Congratulations!** 
@@ -840,6 +724,3 @@ Your complete CI/CD environment is now ready. Every push to your repository can 
 **Happy building!** 🚀
 
 ---
-
-**Last Updated:** November 2025  
-**Tested On:** Windows 11, macOS 14 (Intel & Apple Silicon), Ubuntu 24.04
