@@ -1,22 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <title>Test Page</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page Modern</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2f3, #8e9eab);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 10%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: #222;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #0077ff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #222;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: fadeDown 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            animation: fadeUp 1s ease;
+        }
+
+        .hero button {
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: #0077ff;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero button:hover {
+            background: #005ed6;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 87, 214, 0.3);
+        }
+
+        section.features {
+            padding: 6rem 10%;
+            background: #fff;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            background: #f9f9f9;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: #0077ff;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: #222;
+            color: #ccc;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
-    <h1>Test</h1>
+    <header>
+        <h1>BrandName</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#features">Fitur</a></li>
+                <li><a href="#contact">Kontak</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h2>Selamat Datang di BrandName</h2>
+        <p>Tempat di mana desain modern bertemu dengan kenyamanan digital. Kami hadir untuk membuat pengalamanmu lebih
+            elegan, cepat, dan inspiratif.</p>
+        <button>Mulai Sekarang</button>
+    </section>
+
+    <section class="features" id="features">
+        <div class="feature">
+            <h3>✨ Desain Elegan</h3>
+            <p>Tampilan bersih dan minimalis untuk memberikan kesan profesional dan modern.</p>
+        </div>
+        <div class="feature">
+            <h3>⚡ Performa Cepat</h3>
+            <p>Optimasi ringan untuk waktu muat kilat dan pengalaman yang mulus.</p>
+        </div>
+        <div class="feature">
+            <h3>💡 Responsif</h3>
+            <p>Desain fleksibel yang tetap indah di semua ukuran layar, dari ponsel hingga desktop.</p>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>© 2025 BrandName. Semua hak dilindungi.</p>
+    </footer>
 </body>
 
 </html>
